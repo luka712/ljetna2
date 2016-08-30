@@ -47,10 +47,6 @@ function preload() {
 
     // STEP 1. Load images that are in assets/particle folder, just pass name of each image
     this.load.images([]);
-
-
-
-    this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
 
 function create() {
@@ -102,6 +98,10 @@ function create() {
 
 
     // STEP 22. Add score property to game 
+	
+	
+
+    this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
 
 function update() {
