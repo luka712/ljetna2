@@ -1,7 +1,7 @@
-function ScrollingBackground(game, sprite){   
+function ScrollingBackground(game, sprite, speed){   
     BaseGameObject.call(this, game , sprite);
         
-    this.sprite.body.velocity.x = -30;
+    this.sprite.body.velocity.x = speed;
     this.sprite.anchor = new Phaser.Point(0,0);
 }
 

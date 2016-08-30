@@ -39,14 +39,16 @@ function preload() {
         this.load.image('asteroid' + i, 'assets/asteroid' + i + '.png');
     }
     this.load.image('bullet', 'assets/bullet.png');
+	
+	
+    // STEP 7. Pass correct width, height and frame number for explosion
+    this.load.spritesheet('explosion', 'assets/explosion.png',128 ,128);
 
     this.load.path = 'assets/particles/';
 
     // STEP 1. Load images that are in assets/particle folder, just pass name of each image
-    this.load.images([]);
+    this.load.images(['flare_point']);
 
-    // STEP 7. Pass correct width, height and frame number for explosion
-    //this.load.image('explosion', 'assets/explosion.png', , ,);
 
     this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
@@ -67,11 +69,11 @@ function create() {
 
 
     // STEP 2. Add emitter http://phaser.io/docs/2.4.1/Phaser.GameObjectFactory.html#emitter
-    var playerEngineEmitter = null;
+    var playerEngineEmitter = this.add.emitter(0,0,300);
     // STEP 3. Pass particles for emitter. That is image that is going to be used for emitter.
     // Pass emitter as third argument to player. 
-    playerEngineEmitter.makeParticles([]);
-    this.player = new Player(game, this.add.sprite(0, 0, 'player'));
+    playerEngineEmitter.makeParticles(['flare_point']);
+    this.player = new Player(game, this.add.sprite(0, 0, 'player'), playerEngineEmitter);
     // STEP 20. Add health bar property to player and initalize new bar
 
     this.enemies = [];
@@ -97,6 +99,9 @@ function create() {
 
     this.explosions = [];
     // STEP 8. Add create explosion method which takes two parameters, x and y for position.
+    this.createExplosion = function (x,y) {
+        this.explosions.push(new Explosion(this, this.add.sprite(x,y,'explosion')));
+    }
 
 
     // STEP 22. Add score property to game 
@@ -113,10 +118,10 @@ function update() {
 
     for (var i = this.enemies.length - 1; i >= 0; i--) {
 
-        this.game.physics.arcade.collide(this.player.sprite, this.enemies[i].sprite, playerEnemyCollision);
+        this.game.physics.arcade.collide(this.player.sprite, this.enemies[i].sprite, playerEnemyCollision, null, this);
 
         for (var j in this.bullets) {
-            this.physics.arcade.collide(this.bullets[j].sprite, this.enemies[i].sprite, bulletEnemyCollision);
+            this.physics.arcade.collide(this.bullets[j].sprite, this.enemies[i].sprite, bulletEnemyCollision, null, this);
         }
 
         this.enemies[i].update();
@@ -142,6 +147,11 @@ function update() {
     }
 
     // STEP 16. Add code to remove inactive explosions from array.
+	for(var i = this.explosions.length - 1; i >= 0;i--){
+		if(this.explosions[i].active == false){
+			this.explosions.splice(i,1);
+		}
+	}
 }
 
 function playerEnemyCollision(playerSprite, enemySprite) {
@@ -152,6 +162,7 @@ function playerEnemyCollision(playerSprite, enemySprite) {
 
     enemySprite.object.active = false;
     // STEP 14. Call create explosion here, and pass enemySprite position as parameters.
+	this.createExplosion(playerSprite.position.x, playerSprite.position.y);
 
     // STEP 24. Decrement score by 10 and set score text.
 
@@ -167,6 +178,7 @@ function bulletEnemyCollision(bulletSprite, enemySprite) {
     enemySprite.object.active = false;
 
     // STEP 15. Create explosion, pass enemy position params,
+	this.createExplosion(enemySprite.position.x, enemySprite.position.y);
 
     // STEP 23. Increment score by 10. 
     // this.scoreText.setText(SCORE_TEXT);
