@@ -50,7 +50,6 @@ function preload() {
     this.load.images(['flare_point']);
 
 
-    this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
 
 function create() {
@@ -75,6 +74,7 @@ function create() {
     playerEngineEmitter.makeParticles(['flare_point']);
     this.player = new Player(game, this.add.sprite(0, 0, 'player'), playerEngineEmitter);
     // STEP 20. Add health bar property to player and initalize new bar
+	this.healthBar = new Bar(this, WIDTH / 2, HEIGHT - 100, this.player.health * 4, 20);
 
     this.enemies = [];
 
@@ -105,6 +105,10 @@ function create() {
 
 
     // STEP 22. Add score property to game 
+	this.score = 0;
+	
+	
+    this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
 
 function update() {
@@ -159,12 +163,17 @@ function playerEnemyCollision(playerSprite, enemySprite) {
     playerSprite.object.health -= enemySprite.object.damage;
     // STEP 21. Check if health bar is not null, if so , change width off player health bar.
     // Try and run game to see if bar is drawing.
+	if(this.player.healthBar){
+		this.player.healthBar.setWidth(this.player.health * 4);
+	}
 
     enemySprite.object.active = false;
     // STEP 14. Call create explosion here, and pass enemySprite position as parameters.
 	this.createExplosion(playerSprite.position.x, playerSprite.position.y);
 
     // STEP 24. Decrement score by 10 and set score text.
+	this.score -= 10;
+	this.scoreText.setText(SCORE_TEXT + this.score);
 
     if (playerSprite.object.health <= 0) {
         playerSprite.destroy();
@@ -181,6 +190,7 @@ function bulletEnemyCollision(bulletSprite, enemySprite) {
 	this.createExplosion(enemySprite.position.x, enemySprite.position.y);
 
     // STEP 23. Increment score by 10. 
-    // this.scoreText.setText(SCORE_TEXT);
+	 this.score += 10;
+     this.scoreText.setText(SCORE_TEXT + this.score);
 
 }
