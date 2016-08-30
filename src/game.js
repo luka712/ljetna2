@@ -39,14 +39,16 @@ function preload() {
         this.load.image('asteroid' + i, 'assets/asteroid' + i + '.png');
     }
     this.load.image('bullet', 'assets/bullet.png');
+	
+	    // STEP 7. Pass correct width, height and frame number for explosion
+    //this.load.spritesheet('explosion', 'assets/explosion.png', , ,);
 
     this.load.path = 'assets/particles/';
 
     // STEP 1. Load images that are in assets/particle folder, just pass name of each image
     this.load.images([]);
 
-    // STEP 7. Pass correct width, height and frame number for explosion
-    //this.load.image('explosion', 'assets/explosion.png', , ,);
+
 
     this.scoreText = game.add.text(10, 10, 'Score: ', { font: "30pt Courier", fill: "#19cb65", stroke: "#119f4e", strokeThickness: 2 });
 }
